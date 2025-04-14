@@ -1,0 +1,11 @@
+paracetamol,21,100.00
+aspirina,60,17.99
+ibuprofen,15,30.00
+penicilina,12,50.00
+amoxacilina,30,60.00
+optisan,5,25.50
+nurofen,80,29.996,21,21.00
+amoxiplus,3,59.99
+amoflex,20,39.99
+perceptal,34,49.99
+test,20,35.00
