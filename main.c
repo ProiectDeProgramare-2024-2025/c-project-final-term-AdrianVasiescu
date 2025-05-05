@@ -19,7 +19,17 @@ typedef struct {
     int cantitateRezervata;
 } Rezervare;
 
+void clearScreen() {
+    system("clear"); 
+}
+
+void pause() {
+    printf("\nApasă Enter pentru a reveni la meniu...");
+    getchar(); getchar(); 
+}
+
 void afisareProduse(const char path[]) {
+    clearScreen();
     FILE *filePointer = fopen(path, "r");
 
     printf("--------------\n");
@@ -41,9 +51,11 @@ void afisareProduse(const char path[]) {
     }
 
     printf("--------------\n");
+    pause();
 }
 
 void afisareRezervari() {
+    clearScreen();
     FILE *filePointer = fopen("rezervari.txt", "r");
 
     printf("--------------\n");
@@ -52,6 +64,7 @@ void afisareRezervari() {
 
     if (filePointer == NULL) {
         printf(RED "Nu există rezervări sau fisierul nu poate fi deschis.\n" RESET);
+        pause();
         return;
     }
 
@@ -65,42 +78,50 @@ void afisareRezervari() {
 
     fclose(filePointer);
     printf("--------------\n");
+    pause();
 }
 
 void adaugaProdus(const char path[]) {
+    clearScreen();
     FILE *filePointer = fopen(path, "a");
 
     if (filePointer == NULL) {
         printf(RED "Eroare: fisierul nu poate fi accesat.\n" RESET);
+        pause();
         return;
     }
 
     Produs p;
-    printf("Numele produsului: ");
+    printf(" Introdu numele produsului: ");
     getchar();
     scanf("%[^\n]", p.nume);
-    printf("Cantitatea: ");
+
+    printf(" Introdu cantitatea: ");
     scanf("%d", &p.cantitate);
-    printf("Pretul: ");
+
+    printf(" Introdu prețul: ");
     scanf("%f", &p.pret);
 
     fprintf(filePointer, "%s,%d,%.2f\n", p.nume, p.cantitate, p.pret);
     fclose(filePointer);
 
-    printf(GREEN "Produsul %s a fost adaugat cu succes!\n" RESET, p.nume);
+    printf(GREEN "\nProdusul %s a fost adăugat cu succes!\n" RESET, p.nume);
+    pause();
 }
 
 void stergeProdus(const char path[]) {
+    clearScreen();
     FILE *filePointer = fopen(path, "r");
     FILE *tempFile = fopen("temp.txt", "w");
 
     if (filePointer == NULL || tempFile == NULL) {
         printf(RED "Eroare: fisierul nu poate fi accesat.\n" RESET);
+        pause();
         return;
     }
 
     char numeCautat[30];
-    printf("Numele produsului de sters: ");
+    printf("Introdu numele produsului de șters: ");
     getchar();
     scanf("%[^\n]", numeCautat);
 
@@ -125,21 +146,25 @@ void stergeProdus(const char path[]) {
     rename("temp.txt", path);
 
     if (gasit)
-        printf(GREEN "Produsul %s a fost sters cu succes!\n" RESET, numeCautat);
+        printf(GREEN "\nProdusul %s a fost șters cu succes!\n" RESET, numeCautat);
     else
-        printf(RED "Produsul %s nu a fost gasit.\n" RESET, numeCautat);
+        printf(RED "\nProdusul %s nu a fost găsit.\n" RESET, numeCautat);
+
+    pause();
 }
 
 void cautaProdus(const char path[]) {
+    clearScreen();
     FILE *filePointer = fopen(path, "r");
 
     if (filePointer == NULL) {
         printf(RED "Eroare: fisierul nu poate fi accesat.\n" RESET);
+        pause();
         return;
     }
 
     char numeCautat[30];
-    printf("Numele produsului cautat: ");
+    printf(" Introdu numele produsului căutat: ");
     getchar();
     scanf("%[^\n]", numeCautat);
 
@@ -158,16 +183,20 @@ void cautaProdus(const char path[]) {
     fclose(filePointer);
 
     if (!gasit)
-        printf(RED "Produsul %s nu a fost gasit.\n" RESET, numeCautat);
+        printf(RED "\nProdusul %s nu a fost găsit.\n" RESET, numeCautat);
+
+    pause();
 }
 
 void rezervaProdus(const char path[]) {
+    clearScreen();
     FILE *filePointer = fopen(path, "r");
     FILE *tempFile = fopen("temp.txt", "w");
     FILE *rezFile = fopen("rezervari.txt", "a");
 
     if (filePointer == NULL || tempFile == NULL || rezFile == NULL) {
         printf(RED "Eroare: fisierul nu poate fi accesat.\n" RESET);
+        pause();
         return;
     }
 
@@ -175,10 +204,10 @@ void rezervaProdus(const char path[]) {
     int cantitateDorita;
     int gasit = 0;
 
-    printf("Numele produsului de rezervat: ");
+    printf(" Numele produsului de rezervat: ");
     getchar();
     scanf("%[^\n]", numeCautat);
-    printf("Cantitatea dorita: ");
+    printf("Cantitatea dorită: ");
     scanf("%d", &cantitateDorita);
 
     char linie[100];
@@ -190,11 +219,12 @@ void rezervaProdus(const char path[]) {
         if (strcmp(p.nume, numeCautat) == 0) {
             gasit = 1;
             if (cantitateDorita > p.cantitate) {
-                printf(RED "Nu sunt suficiente produse in stoc!\n" RESET);
+                printf(RED " Nu sunt suficiente produse în stoc!\n" RESET);
                 fclose(filePointer);
                 fclose(tempFile);
                 fclose(rezFile);
                 remove("temp.txt");
+                pause();
                 return;
             } else {
                 p.cantitate -= cantitateDorita;
@@ -214,9 +244,11 @@ void rezervaProdus(const char path[]) {
     rename("temp.txt", path);
 
     if (gasit)
-        printf(GREEN "Produsul %s a fost rezervat cu succes!\n" RESET, numeCautat);
+        printf(GREEN "\nProdusul %s a fost rezervat cu succes!\n" RESET, numeCautat);
     else
-        printf(RED "Produsul %s nu a fost gasit.\n" RESET, numeCautat);
+        printf(RED "\nProdusul %s nu a fost găsit.\n" RESET, numeCautat);
+
+    pause();
 }
 
 void meniu(int op, const char path[]) {
@@ -228,7 +260,8 @@ void meniu(int op, const char path[]) {
         case 5: rezervaProdus(path); break;
         case 6: afisareRezervari(); break;
         default:
-            printf(RED "Optiune invalida.\n" RESET);
+            printf(RED " Opțiune invalidă.\n" RESET);
+            pause();
             break;
     }
 }
@@ -238,24 +271,25 @@ int main() {
     int optiune;
 
     do {
-        printf("--------------\n");
-        printf("1 - Adaugare produs\n");
-        printf("2 - Afisare produse\n");
-        printf("3 - Stergere produs\n");
-        printf("4 - Cautare produs\n");
+        clearScreen();
+        printf("-------MENIU-------\n");
+        printf("1 - Adăugare produs\n");
+        printf("2 - Afișare produse\n");
+        printf("3 - Ștergere produs\n");
+        printf("4 - Căutare produs\n");
         printf("5 - Rezervare produs\n");
-        printf("6 - Afisare produse rezervate\n");
-        printf("0 - Exit\n");
-        printf("--------------\n");
+        printf("6 - Afișare produse rezervate\n");
+        printf("0 - Ieșire\n");
+        printf("----------------\n");
 
-        printf("Introduceti optiunea: ");
+        printf("Introdu opțiunea: ");
         if (scanf("%d", &optiune) != 1) {
-            printf(RED "Input invalid. Introdu un numar.\n" RESET);
+            printf(RED "Input invalid. Introdu un număr.\n" RESET);
             break;
         }
 
         if (optiune < 0 || optiune > 6) {
-            printf(RED "Optiune invalida. Vrei sa revii la meniu? (y/n): " RESET);
+            printf(RED "Opțiune invalidă. Vrei să revii la meniu? (y/n): " RESET);
             char rasp;
             getchar();
             scanf(" %c", &rasp);
@@ -269,3 +303,4 @@ int main() {
 
     return 0;
 }
+
